@@ -9,6 +9,41 @@
 #include <boost/lexical_cast.hpp>
 //#include <map>
 
+class BackGround
+{
+	public:
+	
+		void LoadFromFile_1 (std::string);
+		void Draw (sf::RenderWindow&);
+		
+		friend class sf::Image;
+	private:
+		sf::Image image_1;
+		sf::Sprite sprite_1;
+};
+
+void
+BackGround::LoadFromFile_1 (std::string path)
+{
+	image_1.LoadFromFile (path);
+	image_1.SetSmooth (false);
+	sprite_1.SetImage (image_1);
+	sprite_1.Resize (800,800);
+}
+
+void
+BackGround::Draw (sf::RenderWindow &App)
+{
+	const sf::View  *view = &App.GetView();
+	sf::View  dview = App.GetDefaultView();
+	
+	sf::Vector2f center = view->GetCenter();
+	sf::Vector2f dcenter = dview.GetCenter();
+	sprite_1.SetPosition ( (dcenter.x + center.x)/4, (dcenter.y - center.y)/4 );
+	
+	App.Draw (sprite_1);
+}
+
 int
 main (void)
 {
@@ -23,35 +58,43 @@ main (void)
 	MyFont.LoadFromFile ("../resources/fonts/DejaVuSans.ttf", 50);
 	sf::String text  ("", MyFont, 24);
 	text.SetX (592);
-	text.SetY (85);
+	text.SetY (165);
 	text.SetColor (sf::Color (0,0,0));
 	
 	sf::Vector2f Center(500, 300);
 	sf::Vector2f HalfSize(400, 300);
+	sf::View follow_view (Center,HalfSize);
 	sf::View View (Center, HalfSize);
 	
 	Ship ship;
 	Entity invader;
+	
+	BackGround bg;
+	bg.LoadFromFile_1 ("../resources/pics/background_1.png");
 	
 	invader.SetImageFromFile("../resources/pics/invader_1.png");
 	invader.SetX (400.f);
 	invader.SetY (300.f);
 	invader.SetMass (100.f);
 	
-	ship.SetImageFromFile ("../resources/pics/ship.png");
+	ship.SetImageFromFile ("../resources/pics/ship_w.png");
 	ship.SetX (400.f);
 	ship.SetY (400.f);
 	ship.SetMass (10.f);
 	ship.SetMarchEngineForce (10.f);
-		
+	
+	
 	sf::Vector2f mouse_pos;
 	sf::Vector2f scroll_view_pos;
 	sf::Vector2f scroll_mouse_pos;
 	
 	//objects_to_draw.insert (::pair<int,sf::Sprite>(1, ship));
 	
-	GUIWindow mywindow = GUIWindow (575, 25, 200, 200, sf::Color (128, 128,64, 128));
-	GUICheckBox checkbox = GUICheckBox (600, 50, "Draw grid");
+	GUIWindow mywindow = GUIWindow (575, 25, 200, 200, sf::Color (192, 32,32, 110));
+	GUICheckBox check_grid = GUICheckBox (600, 50, "Draw grid");
+	GUICheckBox check_invader = GUICheckBox (600, 80, "Spin");
+	GUICheckBox check_day = GUICheckBox (600, 110, "Day/Night");
+	GUICheckBox check_follow = GUICheckBox (600, 140, "Follow");
 	
 	bool key_pressed_lock = false;
 	
@@ -117,21 +160,43 @@ main (void)
 		/* **** *
 		 * GAME *
 		 * **** */
-		App.SetView (View); //Камера
-		App.Clear (sf::Color(255, 255, 255)); //Свет
-		
-		if (checkbox.GetState ()) 
+		if (check_follow.GetState ())
 		{
-			draw_grid (App, View, 200, 3);
-			draw_grid (App, View, 50, 1);
+			follow_view.SetCenter (ship.GetPosition());
+			App.SetView (follow_view);
+		}
+		else
+			App.SetView (View); //Камера
+		sf::Color back_color;
+		back_color = (check_day.GetState ())?sf::Color(10,10,10):sf::Color (255,255,255);
+		App.Clear (back_color); //Свет
+		
+		
+		
+		int spin;
+		if (check_invader.GetState ()) 
+		{
+			spin = 100;
+		}
+		else
+		{
+			spin = 0;
 		}
 		
+		
+			
 		float dt = App.GetFrameTime();
 		
 		ship.OnIdle (dt);
 		invader.OnIdle (dt);
-		invader.SetRotation (Clock.GetElapsedTime() * 100);
+		invader.SetRotation (Clock.GetElapsedTime() * spin);
 		
+		bg.Draw (App);
+		if (check_grid.GetState ()) 
+		{
+			draw_grid (App, View, 200, 3);
+			draw_grid (App, View, 50, 1);
+		}
 		
 		App.Draw (invader); //Кино
 		App.Draw (ship);
@@ -141,7 +206,10 @@ main (void)
 		 * ********* */	
 		App.SetView (App.GetDefaultView());
 		mywindow.Draw (App);
-		checkbox.Draw (App);
+		check_grid.Draw (App);
+		check_invader.Draw (App);
+		check_day.Draw (App);
+		check_follow.Draw (App);
 		text.SetText ("FPS: " + boost::lexical_cast<std::string> (floor (1.f/App.GetFrameTime())));
 		App.Draw (text);
 		

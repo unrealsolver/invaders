@@ -3,7 +3,7 @@
 void
 draw_grid (sf::RenderWindow &App, sf::View &View, int grid_scale, int grid_tint)
 {
-		sf::Color color = sf::Color (196, 196, 255);
+		sf::Color color = sf::Color (100, 100, 255, 32);
 		sf::FloatRect grid_rect = View.GetRect();
 
 		int i = floor (grid_rect.Top/grid_scale);

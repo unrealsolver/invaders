@@ -18,8 +18,7 @@ class Entity : public sf::Sprite
 		void SetMass (const float);
 		const float GetMass (void);
 		
-		void ConnectForce (const sf::Vector2f& );
-		void DisconnectForce (const sf::Vector2f&);
+		void SwapColor (const sf::Color&, const sf::Color&);
 		
 		void OnIdle (float);
 		friend class sf::Image;

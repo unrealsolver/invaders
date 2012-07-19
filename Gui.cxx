@@ -119,6 +119,7 @@ GUICheckBox::Draw (sf::RenderWindow &App)
 			sf::Shape dot = sf::Shape::Rectangle (GetX() + d , GetY() + y_offset + d, GetX() + a - d, GetY() + y_offset + a - d, default_color);
 			App.Draw (dot);
 		}
+		
 		App.Draw (box);
 		App.Draw (text);
 	}

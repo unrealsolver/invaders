@@ -8,7 +8,9 @@ Entity::SetImageFromFile (const std::string& path)
 	SetImage (image);
 	SetCenter (image.GetWidth()/2 + 1, image.GetHeight()/2 + 1);
 	image.SetSmooth (false);
-	Resize (200, 200);
+	SetScaleX (15);
+	SetScaleY (15);
+	SetColor (sf::Color (64,64,64, 192));
 }
 
 void
@@ -45,6 +47,16 @@ const float
 Entity::GetMass (void)
 {
 	return m;
+}
+
+void
+Entity::SwapColor (const sf::Color& col_1, const sf::Color& col_2)
+{
+	unsigned x,y;
+	for (x = 0; x < image.GetWidth(); x++)
+		for (y = 0; y < image.GetHeight(); y++)
+			if (image.GetPixel(x, y) == col_1)
+				image.SetPixel (x, y, col_2);
 }
 
 void
