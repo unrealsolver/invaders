@@ -7,42 +7,68 @@
 #include "Misc.h"
 #include "Gui.h"
 #include <boost/lexical_cast.hpp>
-//#include <map>
 
 class BackGround
 {
 	public:
 	
-		void LoadFromFile_1 (std::string);
+		int LoadImage (std::string, unsigned char); //Щито поделать...
 		void Draw (sf::RenderWindow&);
 		
 		friend class sf::Image;
 	private:
-		sf::Image image_1;
-		sf::Sprite sprite_1;
+		sf::Image image[3];
+		sf::Sprite sprite[3];
 };
 
-void
-BackGround::LoadFromFile_1 (std::string path)
+int
+BackGround::LoadImage (std::string path, unsigned char layer)
 {
-	image_1.LoadFromFile (path);
-	image_1.SetSmooth (false);
-	sprite_1.SetImage (image_1);
-	sprite_1.Resize (800,800);
+	layer--;
+	if (layer > 2)
+	{
+		std::cout << "Bad layer number " << (unsigned) layer << std::endl;
+		return 1;
+	}
+	image[layer].LoadFromFile (path);
+	image[layer].SetSmooth (false);
+	sprite[layer].SetImage (image[layer]);
+	sprite[layer].Resize (800,800);
 }
+
 
 void
 BackGround::Draw (sf::RenderWindow &App)
 {
-	const sf::View  *view = &App.GetView();
-	sf::View  dview = App.GetDefaultView();
+	const sf::View  *view = &App.GetView();	
+	const sf::FloatRect *screen = &view->GetRect();
 	
-	sf::Vector2f center = view->GetCenter();
-	sf::Vector2f dcenter = dview.GetCenter();
-	sprite_1.SetPosition ( (dcenter.x + center.x)/4, (dcenter.y - center.y)/4 );
+	int i = 1;
+	int c = 0;
+	int f = 15; 
+	//sprite.SetPosition (screen->Left - fmod(screen->Left/f, sprite.GetSize().x), floor(screen->Top/f));
+	for (i = 0; i < 2; i++)
+	{
+		f /= i + 1;
+		for (int x = screen->Left - fmod(screen->Left/f, sprite[i].GetSize().x); x < screen->Right; x += sprite[i].GetSize().x) // >10: C++ is magic...
+		{	
+			for (int y = screen->Top - fmod(screen->Top/f, sprite[i].GetSize().y); y < screen->Bottom; y += sprite[i].GetSize().y)
+			{
+				if (screen->Left - fmod(screen->Left/f, sprite[i].GetSize().x) > screen->Left) 
+				{
+					std::cout << "WTF?!" << std::endl;
+				//	exit (1);
+				}
+				sprite[i].SetPosition (x, y);
+				App.Draw (sprite[i]);
+				c++;
+			}
+		}
+	}
+	std::cout << "Total tiles: " << c << std::endl;
 	
-	App.Draw (sprite_1);
 }
+
 
 int
 main (void)
@@ -70,7 +96,8 @@ main (void)
 	Entity invader;
 	
 	BackGround bg;
-	bg.LoadFromFile_1 ("../resources/pics/background_1.png");
+	bg.LoadImage ("../resources/pics/background_1.png", 1);
+	bg.LoadImage ("../resources/pics/background_2.png", 2);
 	
 	invader.SetImageFromFile("../resources/pics/invader_1.png");
 	invader.SetX (400.f);
@@ -90,7 +117,7 @@ main (void)
 	
 	//objects_to_draw.insert (::pair<int,sf::Sprite>(1, ship));
 	
-	GUIWindow mywindow = GUIWindow (575, 25, 200, 200, sf::Color (192, 32,32, 110));
+	GUIWindow mywindow = GUIWindow (575, 25, 200, 200, sf::Color (200, 255,200, 40));
 	GUICheckBox check_grid = GUICheckBox (600, 50, "Draw grid");
 	GUICheckBox check_invader = GUICheckBox (600, 80, "Spin");
 	GUICheckBox check_day = GUICheckBox (600, 110, "Day/Night");

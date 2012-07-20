@@ -53,7 +53,7 @@ class GUICheckBox : public GUIWindow //А надо ли? Использоват�
 		bool GetState (void);
 		void ChangeState (void);
 		
-		void Draw (sf::RenderWindow&); //Хуита. TODO: Исользовать стандартный события.
+		void Draw (sf::RenderWindow&); //Хуита. TODO: Исользовать стандартный события. //Или не использовать
 		void OnIdle (float);
 		
 		friend class sf::Sprite;
