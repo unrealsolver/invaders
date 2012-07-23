@@ -44,13 +44,16 @@ GUIWindow::Draw (sf::RenderWindow &App)
 {
 	if (IsVisible())
 	{
+		/*
 		sf::Shape window = sf::Shape::Rectangle (GetX(), GetY(), GetWidth(), GetHeight(), fill_color);
-		App.Draw (window);
+		App.draw (window);
+		*/
 	}
 }
 
 GUICheckBox::GUICheckBox (int x, int y, std::string text_str) : GUIWindow (x, y, x + 1, y + 1)
 {
+	/*
 	font.LoadFromFile ("../resources/fonts/DejaVuSans.ttf");
 	text.SetText (text_str);
 	text.SetX (x + 20);
@@ -59,6 +62,7 @@ GUICheckBox::GUICheckBox (int x, int y, std::string text_str) : GUIWindow (x, y,
 	text.SetColor (sf::Color (0,0,0));
 	text.SetSize (24);
 	state = false;
+	*/
 } 
 
 bool
@@ -81,7 +85,7 @@ GUICheckBox::Draw (sf::RenderWindow &App)
 {	
 	if (IsVisible())
 	{
-		
+	/*	
 		int y_offset = 9;
 		int outline = 3;
 		int a = 12; //box size
@@ -89,10 +93,12 @@ GUICheckBox::Draw (sf::RenderWindow &App)
 		sf::Color default_color;
 		sf::Vector2f mouse_pos;
 		
+
 		const sf::Input& Input = App.GetInput();
 		mouse_pos = App.ConvertCoords(Input.GetMouseX(), Input.GetMouseY());
 		if (mouse_pos.x > GetX() - outline && mouse_pos.x < GetX() + a + outline && mouse_pos.y > GetY() + y_offset - outline && mouse_pos.y < GetY() + a + y_offset + outline)
 		{
+			//box.SetRotation (3.f);
 			default_color = sf::Color (32,128,64);
 			if (Input.IsMouseButtonDown (sf::Mouse::Left))
 			{
@@ -109,11 +115,13 @@ GUICheckBox::Draw (sf::RenderWindow &App)
 		}
 		else
 		{
+		//	box.SetRotation (0);
 			default_color = sf::Color (0,0,0);
 		}
 		
 		
-		sf::Shape box = sf::Shape::Rectangle (GetX(), GetY() + y_offset, GetX() + a, GetY() + y_offset + a, sf::Color (255,255,255,0), outline, default_color);
+		sf::Shape box = sf::Shape::Rectangle (GetX(), GetY() + y_offset, GetX() + a, GetY() + y_offset + a, sf::Color (255,255,255,0), outline, default_color);	
+		
 		if (GetState())
 		{
 			sf::Shape dot = sf::Shape::Rectangle (GetX() + d , GetY() + y_offset + d, GetX() + a - d, GetY() + y_offset + a - d, default_color);
@@ -122,5 +130,7 @@ GUICheckBox::Draw (sf::RenderWindow &App)
 		
 		App.Draw (box);
 		App.Draw (text);
+	*/
 	}
+	
 }

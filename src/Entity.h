@@ -3,13 +3,15 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include <iostream>
+#include <boost/lexical_cast.hpp>
+#include <math.h>
 
 class Entity : public sf::Sprite
 {
 	public:
 		Entity (void) : sf::Sprite() {}; //TODO: Implement
 		
-		void SetImageFromFile (const std::string&);
+		void SetTextureFromFile (const std::string&); //Rename to "loadTexture"
 			
 		void SetForce (const sf::Vector2f&);
 		const sf::Vector2f& GetForce (void);
@@ -20,8 +22,12 @@ class Entity : public sf::Sprite
 		
 		void SwapColor (const sf::Color&, const sf::Color&);
 		
+		void Draw (sf::RenderWindow &target);
+		
 		void OnIdle (float);
-		friend class sf::Image;
+
+		friend class sf::Image;	
+		
 	private:
 		//std::vector <sf::Vector2f*> forces;
 		sf::Vector2f F;
@@ -29,8 +35,10 @@ class Entity : public sf::Sprite
 		sf::Vector2f V;
 		float M;
 		float m;
+		sf::Font font; //tmp
+		float prevdt; //tmp
+		sf::Texture texture;
 		
-		sf::Image image;
 };
 
 #endif
