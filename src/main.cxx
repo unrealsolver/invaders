@@ -4,8 +4,8 @@
 #include "Entity.h"
 #include "Particle.h"
 #include "Ship.h"
-#include "Misc.h"
 #include "Gui.h"
+#include "Grid.h"
 #include <boost/lexical_cast.hpp>
 
 class BackGround
@@ -84,13 +84,15 @@ main (void)
 	sf::Font MyFont;
 	MyFont.loadFromFile ("../resources/fonts/visitor1.ttf");
 	sf::Text text  ("", MyFont, 32);
-	text.setPosition (592.f, 165.f);
-	text.setColor (sf::Color (128,128,128));
+	text.setPosition (600, 20);//592.f, 165.f);
+	text.setColor (sf::Color (255,255,255));
 	
 	sf::Vector2f Center(500, 300);
 	sf::Vector2f HalfSize(400, 300);
 	sf::View follow_view (Center,HalfSize);
 	sf::View View (Center, HalfSize);
+	
+	Grid grid (App);
 	
 	Ship ship;
 	Entity invader;
@@ -150,7 +152,7 @@ main (void)
 		
 		//mouse_pos = App.ConvertCoords(Input.GetMouseX(), Input.GetMouseY());
 		
-		if (sf::Mouse::isButtonPressed (sf::Mouse::Middle))
+		if (sf::Mouse::isButtonPressed (sf::Mouse::Left))
 		{
 			/* TODO: Rewrite */
 			View.setCenter (scroll_view_pos - mouse_pos + scroll_mouse_pos);
@@ -205,7 +207,7 @@ main (void)
 		*/
 		App.setView (View); //Камера
 		sf::Color back_color;
-		back_color = sf::Color(10,10,10);
+		back_color = sf::Color(0x37, 0x8F, 0xAB);//10,10,10);
 		App.clear (back_color); //Свет
 		
 		int spin = 1;
@@ -235,10 +237,10 @@ main (void)
 			draw_grid (App, View, 50, 1);
 		}
 		*/
-		
+		grid.draw();
 		App.draw (invader); //Кино
 		App.draw (ship);
-	
+		//std::cout << App.getView().getViewport().left << std::endl;
 		
 		/* ********* *
 		 * INTERFACE *

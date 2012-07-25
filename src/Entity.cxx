@@ -9,7 +9,7 @@ Entity::SetTextureFromFile (const std::string& path)
 	setOrigin (texture.getSize().x / 2 + 1, texture.getSize().y / 2 + 1);
 	texture.setSmooth (false);
 	setScale (10, 10);
-	setColor (sf::Color (64,64,64, 192));
+	setColor (sf::Color (192,192,192, 192));
 	//font.loadFromFile ("../resources/fonts/visitor1.ttf");//tmp
 }
 
