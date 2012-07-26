@@ -132,6 +132,10 @@ main (void)
 		sf::Event Event;
 		while (App.pollEvent(Event))
 		{
+			if (Event.type == sf::Event::MouseWheelMoved)
+			{
+				View.zoom (1 - Event.mouseWheel.delta*0.01);
+			}
 			if (Event.type == sf::Event::Closed)
 				App.close();
 			if (Event.type == sf::Event::KeyPressed)
@@ -146,10 +150,22 @@ main (void)
 		}
 		
 		/* Начиная отсюда и до секции GAME идёт невообразимая хуита. Переписать. */
-		//const sf::Input& Input = App.GetInput();
 		
 		mouse_pos =  (sf::Vector2f) sf::Mouse::getPosition (App);
+		mouse_pos /= App.getSize().x/View.getSize().x; //Correction of zoom-factor
+		/* Вычисление орта указателя мыши относительно игрока */
+		sf::Vector2f mouse_ort = mouse_pos - ship.getPosition() + View.getCenter() - View.getSize()/2.f;
 		
+		sf::RectangleShape marker;
+		marker.setSize (sf::Vector2f (10, 10));
+		marker.setPosition (mouse_ort + ship.getPosition());
+		marker.setFillColor (sf::Color (40, 255, 90));
+		std::cout << mouse_ort.x << std::endl;
+		//std::cout << << std::endl;
+		//mouse_ort.x /= sqrt (mouse_ort.x*mouse_ort.x + mouse_ort.y*mouse_ort.y);
+		//mouse_ort.y /= sqrt (mouse_ort.x*mouse_ort.x + mouse_ort.y*mouse_ort.y);
+		
+		ship.setRotation (atan2 (mouse_ort.x, - mouse_ort.y) * 180 /M_PI);
 		//mouse_pos = App.ConvertCoords(Input.GetMouseX(), Input.GetMouseY());
 		
 		if (sf::Mouse::isButtonPressed (sf::Mouse::Left))
@@ -182,6 +198,7 @@ main (void)
 		
 		if (left_key_down)
 		{
+			//View.zoom (1.01);
 			ship.setRotation (ship.getRotation() - 2);
 		}
 		else if (right_key_down)
@@ -205,6 +222,7 @@ main (void)
 		back_color = (check_day.GetState ())?sf::Color(10,10,10):sf::Color (255,255,255);
 		App.clear (back_color); //Свет
 		*/
+		//View.setCenter (ship.getPosition());
 		App.setView (View); //Камера
 		sf::Color back_color;
 		back_color = sf::Color(0x37, 0x8F, 0xAB);//10,10,10);
@@ -240,13 +258,14 @@ main (void)
 		grid.draw();
 		App.draw (invader); //Кино
 		App.draw (ship);
+		App.draw (marker);
 		//std::cout << App.getView().getViewport().left << std::endl;
 		
 		/* ********* *
 		 * INTERFACE *
 		 * ********* */	
 		App.setView (App.getDefaultView());
-		
+
 		/*mywindow.Draw (App);
 		check_grid.Draw (App);
 		check_invader.Draw (App);

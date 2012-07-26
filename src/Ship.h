@@ -3,16 +3,9 @@
 
 #include <iostream>
 #include <math.h>
-#include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
 
-
-enum
-{
-	CW = 1,
-	CCW
-};
 
 class Ship : public Entity
 {
@@ -25,10 +18,11 @@ class Ship : public Entity
 		void OnIdle (float);
 		
 		void DrawFire (void);
+	
 	private:
+		sf::Vector2f turn_ort;
 		float march_engine_force;
 		bool march_engine_activated;
-		//bool is_draw_fire;
 };
 
 #endif
