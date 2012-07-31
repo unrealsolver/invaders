@@ -1,24 +1,11 @@
 #include "Grid.h"
 
-Grid::Grid (sf::RenderWindow &window)
+Grid::Grid (sf::RenderWindow &target) : window (target)
 {
 	color = sf::Color (255,255,255,128);
-	subdivide = 5;
+	subdivide = 4;
 	scale = 50;
-	this->window = &window;
 	this->line.setFillColor (color);
-}
-
-void
-Grid::setScale (unsigned scale)
-{
-	this->scale = scale;
-}
-
-unsigned
-Grid::getScale (void)
-{
-	return this->scale;
 }
 
 void
@@ -46,40 +33,62 @@ Grid::getSubdivide (void)
 }
 
 void
+Grid::adjust (void)
+{
+	/* TODO: Rewrite. Antipattern: "Magic numbers" */
+	if (window.getView().getSize().y / scale > 5)
+	{	
+		scale *= subdivide;
+	}
+	if (window.getView().getSize().y / scale < 2)
+	{
+		scale /= subdivide;
+	}
+	
+}
+
+void
 Grid::draw (void)
 {
+	view = window.getView ();
 	draw_grid (1, this->scale);
-	draw_grid (2, this->scale * this->subdivide);
-	
+	window.setView (view);
+	draw_grid (3, this->scale * this->subdivide); //TODO: Bad idea. Привязываемся к крупной сетке, а не мелкой. Впрочем похуй...
+	window.setView (view);
 }
 
 void
 Grid::draw_grid (int tint, unsigned scale)
 {
-	/*
-	sf::RectangleShape zero_marker;
-	zero_marker.setSize (sf::Vector2f (10, 10));
-	zero_marker.setPosition (sf::Vector2f (-5.f, -5.f));
-	zero_marker.setOutlineThickness (2);
-	zero_marker.setOutlineColor (sf::Color (64, 255, 32, 150));
-	zero_marker.setFillColor (sf::Color::Transparent);
-	*/
-	const sf::Vector2f &size = window->getView().getSize();
-	const sf::Vector2f &center = window->getView().getCenter();
+	/* Useful references */
+	const sf::Vector2f &size = window.getView().getSize();
+	const sf::Vector2f &center = window.getView().getCenter();
+	const sf::Vector2f &d_size = window.getDefaultView().getSize();//TODO: УБРАТЬ В ДРУГОЕ МЕСТО
 	
-	this->line.setSize (sf::Vector2f (size.x, tint));
-	/*		* центр экрана  * сдвиг					  * упреждение, чтобы рисовать с начала экрана, а не с середины */
-	for (int i = center.y - fmod (center.y, scale) -  (((int) size.y)/(scale*2))*scale; i < center.y + size.y/2; i += scale)
+	/* WARNING: LINEAR ALGEBRA! DON"T READ! */
+	float zoom = (d_size.x / size.x);
+	sf::Vector2f offset;
+	offset.x = fmod (center.x - size.x/2, scale) * zoom;
+	offset.y = fmod (center.y - size.y/2, scale) * zoom;
+	float between = scale * zoom;
+	
+	/* Returns to local coordinates */
+	window.setView (window.getDefaultView());
+	
+	/* Draw */
+	this->line.setSize (sf::Vector2f (d_size.x, tint));
+	
+	for (float i = -offset.y; i < d_size.y; i += between)
 	{
-		line.setPosition (center.x - size.x/2, i);
-		window->draw (line);
+		line.setPosition (0, i);
+		window.draw (line);
 	}
 	
-	this->line.setSize (sf::Vector2f (tint, size.y));
+	this->line.setSize (sf::Vector2f (tint, d_size.y));
 	
-	for (int i = center.x - fmod (center.x, scale)  - (((int) size.x)/(scale*2))*scale; i < center.x + size.x/2; i += scale)
+	for (float i = -offset.x; i < d_size.x; i += between)
 	{
-		line.setPosition (i, center.y - size.y/2);
-		window->draw (line);
+		line.setPosition (i, 0);
+		window.draw (line);
 	}
 }

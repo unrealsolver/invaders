@@ -92,6 +92,7 @@ main (void)
 	sf::View follow_view (Center,HalfSize);
 	sf::View View (Center, HalfSize);
 	
+	App.setView (View);
 	Grid grid (App);
 	
 	Ship ship;
@@ -115,8 +116,6 @@ main (void)
 	sf::Vector2f scroll_view_pos;
 	sf::Vector2f scroll_mouse_pos;
 	
-	//objects_to_draw.insert (::pair<int,sf::Sprite>(1, ship));
-	
 	GUIWindow mywindow = GUIWindow (575, 25, 200, 200, sf::Color (200, 255,200, 40));
 	GUICheckBox check_grid = GUICheckBox (600, 50, "Draw grid");
 	GUICheckBox check_invader = GUICheckBox (600, 80, "Spin");
@@ -135,6 +134,7 @@ main (void)
 			if (Event.type == sf::Event::MouseWheelMoved)
 			{
 				View.zoom (1 - Event.mouseWheel.delta*0.01);
+				grid.adjust ();
 			}
 			if (Event.type == sf::Event::Closed)
 				App.close();
@@ -160,7 +160,7 @@ main (void)
 		marker.setSize (sf::Vector2f (10, 10));
 		marker.setPosition (mouse_ort + ship.getPosition());
 		marker.setFillColor (sf::Color (40, 255, 90));
-		std::cout << mouse_ort.x << std::endl;
+		//std::cout << mouse_ort.x << std::endl;
 		//std::cout << << std::endl;
 		//mouse_ort.x /= sqrt (mouse_ort.x*mouse_ort.x + mouse_ort.y*mouse_ort.y);
 		//mouse_ort.y /= sqrt (mouse_ort.x*mouse_ort.x + mouse_ort.y*mouse_ort.y);
@@ -255,11 +255,11 @@ main (void)
 			draw_grid (App, View, 50, 1);
 		}
 		*/
+		
 		grid.draw();
-		App.draw (invader); //Кино
+		App.draw (invader);
 		App.draw (ship);
 		App.draw (marker);
-		//std::cout << App.getView().getViewport().left << std::endl;
 		
 		/* ********* *
 		 * INTERFACE *
@@ -272,10 +272,12 @@ main (void)
 		check_day.Draw (App);
 		check_follow.Draw (App);
 		*/
+		
 		text.setString ("FPS: " + boost::lexical_cast<std::string> (floor (1.f/dt)));
 		App.draw (text);
 		
 		App.display();
+		App.setView (View); //Камера
 	}
 	
 	return 0;
