@@ -1,7 +1,7 @@
 SFML_LIB = -lsfml-graphics -lsfml-system -lsfml-window
 SRC_PREFIX = ./src/
 
-objects = main.o Entity.o Particle.o Ship.o Gui.o Grid.o
+objects = main.o Entity.o Particle.o Ship.o Gui.o Grid.o Background.o
 
 all: $(objects)
 	g++ -o invaders $(objects) $(SFML_LIB)
@@ -23,6 +23,9 @@ Gui.o: Gui.cxx Gui.h
 	
 Grid.o: Grid.cxx Grid.h
 	g++ -c Grid.cxx
+	
+Background.o: Background.cxx Background.h
+	g++ -c Background.cxx
 
 .PHONY : clean
 clean :
