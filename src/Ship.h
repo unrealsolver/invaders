@@ -6,19 +6,15 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
 
-
 class Ship : public Entity
 {
 	public:
-		Ship (void) : Entity () {};
+		Ship (sf::RenderWindow &target) : Entity (target) {};
 		void SetMarchEngineForce (const float&);
 		const float& GetMarcheEngineForce (void);
 		
 		void SetMarchEngine (bool);
 		void OnIdle (float);
-		
-		void DrawFire (void);
-	
 	private:
 		sf::Vector2f turn_ort;
 		float march_engine_force;

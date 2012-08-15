@@ -29,7 +29,7 @@ class Grid
 		sf::Color color;
 		unsigned subdivide;
 		
-		sf::View view; //This view will be used for drawing grid
+		sf::View view;
 		
 		sf::RectangleShape line; 
 

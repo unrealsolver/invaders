@@ -7,7 +7,7 @@ all: $(objects)
 	g++ -o invaders $(objects) $(SFML_LIB)
 	
 main.o: main.cxx
-	g++ -c main.cxx $(SFML_LIB)
+	g++ -c main.cxx
 
 Entity.o: Entity.cxx Entity.h
 	g++ -c Entity.cxx
@@ -19,14 +19,14 @@ Ship.o: Ship.cxx Ship.h
 	g++ -c Ship.cxx
 
 Gui.o: Gui.cxx Gui.h
-	g++ -c  Gui.cxx
+	g++ -c Gui.cxx
 	
 Grid.o: Grid.cxx Grid.h
 	g++ -c Grid.cxx
 	
 Background.o: Background.cxx Background.h
 	g++ -c Background.cxx
-
+	
 .PHONY : clean
 clean :
 	rm  invaders $(objects)

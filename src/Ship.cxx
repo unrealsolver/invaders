@@ -1,12 +1,6 @@
 #include "Ship.h"
 
 void
-Ship::DrawFire (void)
-{
-	
-}
-
-void
 Ship::OnIdle (float dt)
 {
 	if (march_engine_activated)

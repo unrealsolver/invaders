@@ -4,12 +4,14 @@
 #include <math.h>
 #include <iostream>
 #include <boost/lexical_cast.hpp>
-#include <math.h>
+#include <map>
 
 class Entity : public sf::Sprite
 {
 	public:
-		Entity (void) : sf::Sprite() {}; //TODO: Implement
+		Entity (sf::RenderWindow &target) : window (target) {}; //TODO: Implement
+		
+		void setObjMan (std::multimap<float, Entity*> *objects);
 		
 		void SetTextureFromFile (const std::string&); //Rename to "loadTexture"
 			
@@ -22,22 +24,21 @@ class Entity : public sf::Sprite
 		
 		void SwapColor (const sf::Color&, const sf::Color&);
 		
-		void Draw (sf::RenderWindow &target);
-		
-		void OnIdle (float);
+		virtual void OnIdle (float);
+		virtual void draw (void) { window.draw (*this);};
 
 		friend class sf::Image;	
-		
+		friend class Ship;
 	private:
-		//std::vector <sf::Vector2f*> forces;
+	
+		sf::RenderWindow &window;
 		sf::Vector2f F;
 		float H;
 		sf::Vector2f V;
 		float M;
 		float m;
-		sf::Font font; //tmp
-		float prevdt; //tmp
 		sf::Texture texture;
+		std::multimap<float, Entity*> *objects;
 		
 };
 
